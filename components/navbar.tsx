@@ -2,11 +2,26 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
+import SignInModal from "@/components/sign-in-modal";
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged, User } from "firebase/auth";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // Only run auth state listener on the client side
+    if (auth) {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        setUser(user);
+      });
+
+      return () => unsubscribe();
+    }
+  }, []);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 mx-auto mt-6 w-full max-w-6xl px-4">
@@ -54,11 +69,32 @@ export default function Navbar() {
 
           {/* CTA Button - Hidden on mobile, visible on desktop */}
           <div className="hidden md:block">
-            <Button 
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-full shadow-lg shadow-blue-500/30 transition-all duration-300"
-            >
-              Sign Up Now
-            </Button>
+            {auth && user ? (
+              <Link href="/dashboard">
+                <Button 
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-full shadow-lg shadow-blue-500/30 transition-all duration-300"
+                >
+                  Dashboard
+                </Button>
+              </Link>
+            ) : auth ? (
+              <SignInModal 
+                trigger={
+                  <Button 
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-full shadow-lg shadow-blue-500/30 transition-all duration-300"
+                  >
+                    Sign Up Now
+                  </Button>
+                }
+              />
+            ) : (
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-full shadow-lg shadow-blue-500/30 transition-all duration-300"
+                disabled
+              >
+                Sign Up Now
+              </Button>
+            )}
           </div>
         </div>
 
@@ -87,12 +123,34 @@ export default function Navbar() {
               >
                 Pricing
               </Link>
-              <Button 
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-full shadow-lg shadow-blue-500/30 transition-all duration-300 w-full"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Sign Up Now
-              </Button>
+              
+              {auth && user ? (
+                <Link 
+                  href="/dashboard" 
+                  className="text-sm font-medium text-white/80 hover:text-white transition-colors py-2"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+              ) : auth ? (
+                <SignInModal 
+                  trigger={
+                    <Button 
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-full shadow-lg shadow-blue-500/30 transition-all duration-300 w-full"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign Up Now
+                    </Button>
+                  }
+                />
+              ) : (
+                <Button 
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-full shadow-lg shadow-blue-500/30 transition-all duration-300 w-full"
+                  disabled
+                >
+                  Sign Up Now
+                </Button>
+              )}
             </div>
           </div>
         )}
