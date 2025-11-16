@@ -61,7 +61,7 @@ export default function Globe3D() {
         >
           {/* Floating 3D cards near heading */}
           <motion.div
-            className="absolute -left-20 top-10 hidden xl:block"
+            className="absolute -left-20 top-10 hidden md:block"
             initial={{ y: 0, rotateY: 0 }}
             animate={{
               y: [0, -20, 0],
@@ -83,7 +83,7 @@ export default function Globe3D() {
           </motion.div>
 
           <motion.div
-            className="absolute -right-20 top-10 hidden xl:block"
+            className="absolute -right-20 top-10 hidden md:block"
             initial={{ y: 0, rotateY: 0 }}
             animate={{
               y: [0, 20, 0],
@@ -106,7 +106,7 @@ export default function Globe3D() {
           </motion.div>
 
           <motion.div
-            className="absolute -left-16 top-72 hidden xl:block"
+            className="absolute -left-16 top-72 hidden md:block"
             initial={{ y: 0, rotateZ: 0 }}
             animate={{
               y: [0, -15, 0],
@@ -129,7 +129,7 @@ export default function Globe3D() {
           </motion.div>
 
           <motion.div
-            className="absolute -right-16 top-72 hidden xl:block"
+            className="absolute -right-16 top-72 hidden md:block"
             initial={{ y: 0, rotateZ: 0 }}
             animate={{
               y: [0, 15, 0],
